@@ -1,8 +1,11 @@
 {
+  "homepage": "https://Andriy-Kond.github.io/m3_http-requests",
   "name": "m3_http-requests",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
