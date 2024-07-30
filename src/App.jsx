@@ -1,34 +1,27 @@
 // endpoint: "https://pokeapi.co/api/v2/pokemon/{id or name}/" (https://pokeapi.co/docs/v2#pokemon)
 
+import PokemonForm from "components/PokemonForm";
+import PokemonInfo from "components/PokemonInfo";
 import { Component } from "react";
+import { ToastContainer, toast, Slide } from "react-toastify";
 
 const URL = "https://pokeapi.co/api/v2/pokemon";
 
 class App extends Component {
-  state = {
-    pokemon: null,
-    loading: false,
-  };
+  state = { pokemonName: "" };
 
-  componentDidMount = () => {
-    this.setState({ loading: true });
-
-    fetch(`${URL}/ditto`)
-      .then(res => res.json())
-      .then(pokemon => {
-        this.setState({ pokemon });
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-      });
+  handleFormSubmit = pokemonName => {
+    this.setState({ pokemonName });
+    toast.success(`${pokemonName} was found`);
   };
 
   render() {
-    const { pokemon, loading } = this.state;
+    const { pokemonName } = this.state;
     return (
       <div>
-        {loading && <p>Завантажую...</p>}
-        {pokemon && <div>{pokemon.name}</div>}
+        <ToastContainer autoClose={2000} transition={Slide} />
+        <PokemonForm onSubmit={this.handleFormSubmit} />
+        <PokemonInfo pokemonName={pokemonName} />
       </div>
     );
   }
