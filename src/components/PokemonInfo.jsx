@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import PokemonErrorView from "./PokemonErrorView";
 import PokemonDataView from "./PokemonDataView";
 import PokemonPendingView from "./PokemonPendingView";
+import { fetchPokemon } from "./fetchPokemon";
 
 const URL = "https://pokeapi.co/api/v2/pokemon";
 
@@ -20,26 +21,15 @@ class PokemonInfo extends Component {
     if (prevPokemonName !== nextPokemonName) {
       this.setState({ status: "pending" });
 
-      setTimeout(() => {
-        fetch(`${URL}/${nextPokemonName}`)
-          .then(res => {
-            if (res.ok) {
-              return res.json();
-            }
-
-            return Promise.reject(
-              new Error(`Покемона з ім'ям ${nextPokemonName} не знайдено`),
-            );
-          })
-          .then(pokemon => {
-            this.setState({ pokemon, status: "resolved" });
-            toast.success(`${pokemon.name} was found`);
-          })
-          .catch(error => {
-            this.setState({ error, status: "rejected" });
-            toast.error(error.message);
-          });
-      }, 2000);
+      fetchPokemon(nextPokemonName, URL)
+        .then(pokemon => {
+          this.setState({ pokemon, status: "resolved" });
+          toast.success(`${pokemon.name} was found`);
+        })
+        .catch(error => {
+          this.setState({ error, status: "rejected" });
+          toast.error(error.message);
+        });
     }
   }
 
