@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 Notify.init({
   closeButton: true,
-  clickToClose: true,
+  // clickToClose: true,
   cssAnimationStyle: "from-right",
 });
 

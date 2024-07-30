@@ -5,8 +5,6 @@ import PokemonInfo from "components/PokemonInfo";
 import { Component } from "react";
 import { ToastContainer, Slide } from "react-toastify";
 
-const URL = "https://pokeapi.co/api/v2/pokemon";
-
 class App extends Component {
   state = { pokemonName: "" };
 
