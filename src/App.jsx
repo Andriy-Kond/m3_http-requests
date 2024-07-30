@@ -3,7 +3,7 @@
 import PokemonForm from "components/PokemonForm";
 import PokemonInfo from "components/PokemonInfo";
 import { Component } from "react";
-import { ToastContainer, toast, Slide } from "react-toastify";
+import { ToastContainer, Slide } from "react-toastify";
 
 const URL = "https://pokeapi.co/api/v2/pokemon";
 
@@ -12,7 +12,6 @@ class App extends Component {
 
   handleFormSubmit = pokemonName => {
     this.setState({ pokemonName });
-    toast.success(`${pokemonName} was found`);
   };
 
   render() {
