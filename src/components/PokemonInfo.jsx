@@ -4,66 +4,73 @@ import { toast } from "react-toastify";
 const URL = "https://pokeapi.co/api/v2/pokemon";
 
 class PokemonInfo extends Component {
-  state = { pokemon: null, loading: false, error: null };
+  state = {
+    pokemon: null,
+    error: null,
+    status: "idle",
+    // machine states:
+    // idle
+    // pending
+    // rejected
+    // resolved
+  };
 
   componentDidUpdate(prevProps, prevState) {
     const nextPokemonName = this.props.pokemonName;
     const prevPokemonName = prevProps.pokemonName;
 
     if (prevPokemonName !== nextPokemonName) {
-      this.setState({ loading: true, pokemon: null });
+      this.setState({ status: "pending" });
 
       fetch(`${URL}/${nextPokemonName}`)
         .then(res => {
-          // Якщо буде будь-яка помилка окрім 404, то вона прокинеться до catch. А 404 маємо обробляти якщо бекенд її нормально не кидає:
           if (res.ok) {
-            return res.json(); // якщо все добре, то йдемо далі у then
+            return res.json();
           }
-          // інакше примусово кидаємо помилку у catch за допомогою Promise.reject:
+
           return Promise.reject(
             new Error(`Покемона з ім'ям ${nextPokemonName} не знайдено`),
           );
-
-          // Якщо використовується async, то так само повертаємо Promise.reject і обертаємо у try-catch (якщо треба).
         })
         .then(pokemon => {
-          this.setState({ pokemon });
+          this.setState({ pokemon, status: "resolved" });
           toast.success(`${pokemon.name} was found`);
         })
         .catch(error => {
-          this.setState({ error });
+          this.setState({ error, status: "rejected" });
           toast.error(error.message);
-        })
-        .finally(() => this.setState({ loading: false }));
+        });
     }
   }
 
   render() {
-    const { loading, error } = this.state;
+    const { pokemon, error, status } = this.state;
 
-    const pokemonNameProps = this.props.pokemonName;
-    const { pokemon } = this.state;
+    if (status === "idle") {
+      return <div>Введіть ім'я покемона</div>;
+    }
 
-    return (
-      <div>
-        <h1>Pokemon Info</h1>
+    if (status === "pending") {
+      return <p>Завантажую...</p>;
+    }
 
-        {error && <p>{error.message}</p>}
-        {loading && <p>Завантажую...</p>}
-        {!pokemonNameProps && <div>Введіть ім'я покемона</div>}
-        {pokemon && (
-          <div>
-            <p>Ім'я покемона: {pokemon.name}</p>
-            <p>Зображення покемона:</p>
-            <img
-              alt={pokemon.name}
-              width={300}
-              src={pokemon.sprites.other["official-artwork"].front_default}
-            />
-          </div>
-        )}
-      </div>
-    );
+    if (status === "rejected") {
+      return <p>{error.message}</p>;
+    }
+
+    if (status === "resolved") {
+      return (
+        <div>
+          <p>Ім'я покемона: {pokemon.name}</p>
+          <p>Зображення покемона:</p>
+          <img
+            alt={pokemon.name}
+            width={300}
+            src={pokemon.sprites.other["official-artwork"].front_default}
+          />
+        </div>
+      );
+    }
   }
 }
 
