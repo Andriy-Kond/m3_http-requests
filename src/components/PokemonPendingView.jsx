@@ -24,6 +24,8 @@ class PokemonPendingView extends Component {
           <Spinner size={32} />
           Завантажую...
         </StyledSpinner>
+
+        {/* Skeleton */}
         <PokemonDataView pokemon={this.state} />
       </>
     );
